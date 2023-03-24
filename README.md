@@ -1,2 +1,2 @@
 # CS220A-Microprocesser-Implementation
-Implementation of microprocesser "CSE-BUBBLE"
+Implementation of microprocesser "CSE-BUBBLE" in Verilog.
