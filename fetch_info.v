@@ -1,8 +1,10 @@
 `timescale 1ns / 1ps
 
+// We will use a VEDA memory each for instructions and data
+
 module VEDA (clk, mode, addr, din, we, dout);
 
-//   parameter WIDTH = 128;
+//   parameter WIDTH = 32;
 //   parameter DEPTH = 128;
   
   input clk;
@@ -12,7 +14,7 @@ module VEDA (clk, mode, addr, din, we, dout);
   input we;
   output reg [31:0] dout;
 
-  reg [31:0][31:0] mem;
+  reg [31:0][127:0] mem;
 
   always @(posedge clk) begin
     if(we) begin
