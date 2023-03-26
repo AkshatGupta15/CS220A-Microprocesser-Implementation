@@ -21,7 +21,7 @@
 module addu( unsigned input [31:0] A, unsigned input [31:0] B, unsigned output [31:0] out);
 	 
 always@(*) begin
-  out = a + b;
+  out = A + B;
 end  
 
 endmodule

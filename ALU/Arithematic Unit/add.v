@@ -21,7 +21,7 @@
 module add( signed input [31:0] A, signed input [31:0] B, signed output [31:0] out);
 	 
 always@(*) begin
-  out = a + b;
+  out = A + B;
 end  
 
 endmodule

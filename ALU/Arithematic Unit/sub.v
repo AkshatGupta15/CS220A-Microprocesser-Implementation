@@ -22,7 +22,7 @@
 module sub( signed input [31:0] A, signed input [31:0] B, signed output [31:0] diff);
 	 
 always@(*) begin
-  diff = a - b;
+  diff = A - B;
 end  
 
 endmodule

@@ -22,7 +22,7 @@
 module subu( unsigned input [31:0] A, unsigned input [31:0] B, unsigned output [31:0] diff);
 	 
 always@(*) begin
-  diff = a - b;
+  diff = A - B;
 end  
 
 endmodule
