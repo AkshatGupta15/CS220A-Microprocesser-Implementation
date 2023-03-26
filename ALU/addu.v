@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 // `include "half_adder.v"
 // `include "full_adder.v"
-// module add( signed input [31:0] A, signed input [31:0] B, signed output [31:0] out);
+// module add( unsigned input [31:0] A, unsigned input [31:0] B, unsigned output [31:0] out);
 	 
 //  wire [31:0] cin;
 //  half_adder H1(A[0],B[0],out[0],cin[0]);
@@ -18,11 +18,10 @@
 
 // endmodule
 
-module add( signed input [31:0] A, signed input [31:0] B, signed output [31:0] out);
+module addu( unsigned input [31:0] A, unsigned input [31:0] B, unsigned output [31:0] out);
 	 
 always@(*) begin
   out = a + b;
 end  
 
 endmodule
-
