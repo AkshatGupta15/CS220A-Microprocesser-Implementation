@@ -2,7 +2,7 @@
 `include "../Comparison Unit/slt.v"
 
 
-module bgte (
+module bgt (
     input [31:0] rs,
     input [31:0] rt,
     input [31:0] offset,
@@ -13,11 +13,18 @@ module bgte (
 );
 
     // Compute the comparison and branch condition
-    wire greater;
-    wire equal;
-    slt slt_inst(.a(rt), .b(rs), .slt(greater), .eq(equal));
+    wire slt_out;
     wire branch;
-    assign branch = greater || equal;
+    slt slt_inst(.a(rt), .b(rs), .result(slt_out));
+    
+    always @(*) begin
+        if(slt_out == 0) begin
+            branch = 0;
+        end
+        else begin
+            branch = 1;
+        end
+    end
 
     // Compute the branch target address
     wire [31:0] target;
