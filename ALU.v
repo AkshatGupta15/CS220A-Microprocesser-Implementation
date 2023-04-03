@@ -96,3 +96,33 @@ module SRL(input [31:0] A, input [15:0] sa, output reg [31:0] out);
   end
 
 endmodule
+
+module SLT(input [31:0] A, input [31:0] B, output reg [31:0] out);
+
+  always @(*) begin
+
+    if(A < B) begin
+      out <= 32'b000000_00000_00000_00000_00000_000001;
+    end
+
+    else begin
+      out <= 32'b000000_00000_00000_00000_00000_000000;
+    end 
+
+  end    
+endmodule
+
+module SLTI(input [31:0] A, input [15:0] imm, output reg [31:0] out);
+
+  always @(*) begin
+
+    if(A < {{16{imm[15]}}, imm}) begin
+      out <= 32'b000000_00000_00000_00000_00000_000001;
+    end
+
+    else begin
+      out <= 32'b000000_00000_00000_00000_00000_000000;
+    end 
+     
+  end    
+endmodule

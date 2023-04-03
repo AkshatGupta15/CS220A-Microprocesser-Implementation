@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module beq (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BEQ (clk, rst, r0, r1, offset, pc_in, pc_out);
 
   input clk, rst;
   input [31:0] r0, r1;
@@ -23,7 +23,7 @@ module beq (clk, rst, r0, r1, offset, pc_in, pc_out);
 
 endmodule
 
-module bgt (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BGT (clk, rst, r0, r1, offset, pc_in, pc_out);
 
   input clk, rst;
   input [31:0] r0, r1;
@@ -45,7 +45,7 @@ module bgt (clk, rst, r0, r1, offset, pc_in, pc_out);
 
 endmodule
 
-module bgte (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BGTE (clk, rst, r0, r1, offset, pc_in, pc_out);
 
   input clk, rst;
   input [31:0] r0, r1;
@@ -67,7 +67,7 @@ module bgte (clk, rst, r0, r1, offset, pc_in, pc_out);
 
 endmodule
 
-module ble (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BLE (clk, rst, r0, r1, offset, pc_in, pc_out);
 
   input clk, rst;
   input [31:0] r0, r1;
@@ -89,7 +89,7 @@ module ble (clk, rst, r0, r1, offset, pc_in, pc_out);
 
 endmodule
 
-module bleq (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BLEQ (clk, rst, r0, r1, offset, pc_in, pc_out);
 
   input clk, rst;
   input [31:0] r0, r1;
@@ -111,7 +111,7 @@ module bleq (clk, rst, r0, r1, offset, pc_in, pc_out);
 
 endmodule
 
-module bne (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BNE (clk, rst, r0, r1, offset, pc_in, pc_out);
 
   input clk, rst;
   input [31:0] r0, r1;
@@ -133,7 +133,7 @@ module bne (clk, rst, r0, r1, offset, pc_in, pc_out);
 
 endmodule
 
-module j (
+module J (
     input [25:0] target_address,
     input [31:0] pc_in,
     output reg [31:0] pc_out,
@@ -153,7 +153,7 @@ endmodule
 // with the 26-bit jump address left-shifted by 2 bits. 
 
 
-module jal(
+module JAL(
     input [25:0] target_address,
     input [31:0] pc_in,
     output reg [31:0] pc_out,
@@ -170,7 +170,7 @@ module jal(
     
 endmodule
 
-module jr (
+module JR (
     input [31:0] r0,
     output reg [31:0] pc_out,
     output reg jump_taken
