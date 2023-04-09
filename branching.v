@@ -1,149 +1,50 @@
 `timescale 1ns / 1ps
 
-module BEQ (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BEQ (input clk,input rst, input signed [31:0] r0,input signed [31:0] r1, input signed [15:0] offset,
+input [31:0] pc_in, output [31:0] pc_out);
 
-  input clk, rst;
-  input [31:0] r0, r1;
-  input [15:0] offset;
-  input [31:0] pc_in;
-
-  output reg [31:0] pc_out;
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      pc_out <= 0;
-    end
-    else if (r0 == r1) begin
-      pc_out <= pc_in + offset + 4;
-    end
-    else begin
-      pc_out <= pc_in + 4;
-    end
-  end
+  assign pc_out = (r0==r1) ? (pc_in + {{16{offset[15]}}, offset} + 1) : (pc_in + 1) ;
 
 endmodule
 
-module BGT (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BGT (input clk,input rst, input signed [31:0] r0,input signed [31:0] r1, input signed [15:0] offset,
+input [31:0] pc_in, output [31:0] pc_out);
 
-  input clk, rst;
-  input [31:0] r0, r1;
-  input [15:0] offset;
-  input [31:0] pc_in;
-  output reg [31:0] pc_out;
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      pc_out <= 0;
-    end
-    else if (r0 > r1) begin
-      pc_out <= pc_in + 4 + offset;
-    end
-    else begin
-      pc_out <= pc_in + 4;
-    end
-  end
+  assign pc_out = (r0 > r1) ? (pc_in + {{16{offset[15]}}, offset} + 1) : (pc_in + 1) ;
 
 endmodule
 
-module BGTE (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BGTE (input clk,input rst, input signed [31:0] r0,input signed [31:0] r1, input signed [15:0] offset,
+input [31:0] pc_in, output [31:0] pc_out);
 
-  input clk, rst;
-  input [31:0] r0, r1;
-  input [15:0] offset;
-  input [31:0] pc_in;
-  output reg [31:0] pc_out;
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      pc_out <= 0;
-    end
-    else if (r0 >= r1) begin
-      pc_out <= pc_in + 4 + offset;
-    end
-    else begin
-      pc_out <= pc_in + 4;
-    end
-  end
+  assign pc_out = (r0 >= r1) ? (pc_in + {{16{offset[15]}}, offset} + 1) : (pc_in + 1) ;
 
 endmodule
 
-module BLE (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BLE (input clk,input rst, input signed [31:0] r0,input signed [31:0] r1, input signed [15:0] offset,
+input [31:0] pc_in, output [31:0] pc_out);
 
-  input clk, rst;
-  input [31:0] r0, r1;
-  input [15:0] offset;
-  input [31:0] pc_in;
-  output reg [31:0] pc_out;
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      pc_out <= 0;
-    end
-    else if (r0 < r1) begin
-      pc_out <= pc_in + 4 + offset;
-    end
-    else begin
-      pc_out <= pc_in + 4;
-    end
-  end
+  assign pc_out = (r0 < r1) ? (pc_in + {{16{offset[15]}}, offset} + 1) : (pc_in + 1) ;
 
 endmodule
 
-module BLEQ (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BLEQ (input clk,input rst, input signed [31:0] r0,input signed [31:0] r1, input signed [15:0] offset,
+input [31:0] pc_in, output [31:0] pc_out);
 
-  input clk, rst;
-  input [31:0] r0, r1;
-  input [15:0] offset;
-  input [31:0] pc_in;
-  output reg [31:0] pc_out;
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      pc_out <= 0;
-    end
-    else if (r0 <= r1) begin
-      pc_out <= pc_in + 4 + offset;
-    end
-    else begin
-      pc_out <= pc_in + 4;
-    end
-  end
+  assign pc_out = (r0 <= r1) ? (pc_in + {{16{offset[15]}}, offset} + 1) : (pc_in + 1) ;
 
 endmodule
 
-module BNE (clk, rst, r0, r1, offset, pc_in, pc_out);
+module BNE (input clk,input rst, input signed [31:0] r0,input signed [31:0] r1, input signed [15:0] offset,
+input [31:0] pc_in, output [31:0] pc_out);
 
-  input clk, rst;
-  input [31:0] r0, r1;
-  input [15:0] offset;
-  input [31:0] pc_in;
-  output reg [31:0] pc_out;
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) begin
-      pc_out <= 0;
-    end
-    else if (r0 != r1) begin
-      pc_out <= pc_in + 4 + offset;
-    end
-    else begin
-      pc_out <= pc_in + 4;
-    end
-  end
+  assign pc_out = (r0 != r1) ? (pc_in + {{16{offset[15]}}, offset} + 1) : (pc_in + 1) ;
 
 endmodule
 
-module J (
-    input [25:0] target_address,
-    input [31:0] pc_in,
-    output reg [31:0] pc_out,
-    output reg jump_taken
-);
-
-    always @(*) begin
-        pc_out = {pc_in[31:28], target_address, 2'b00}; // set jump target address
-        jump_taken = 1'b1; // set jump taken signal
-    end
+module J (input clk, input [25:0] target_address, input [31:0] pc_in, output [31:0] pc_out);
+    
+  assign pc_out = {pc_in[31:28], target_address, 2'b00}; 
 
 endmodule
 
@@ -153,32 +54,15 @@ endmodule
 // with the 26-bit jump address left-shifted by 2 bits. 
 
 
-module JAL(
-    input [25:0] target_address,
-    input [31:0] pc_in,
-    output reg [31:0] pc_out,
-    output reg jump_taken,
-    output reg [31:0] jal_ra
-);
+module JAL(input clk, input [25:0] target_address, input [31:0] pc_in, output [31:0] pc_out, output [31:0] jal_ra);
 
-    always @(*) begin
-        pc_out = {pc_in[31:28], target_address, 2'b00}; // set jump target address
-        jump_taken = 1'b1; // set jump taken signal
-        jal_ra = pc_in + 4;
-    end
-
-    
+  assign pc_out = {pc_in[31:28], target_address, 2'b00};
+  assign jal_ra = pc_in + 1;
+     
 endmodule
 
-module JR (
-    input [31:0] r0,
-    output reg [31:0] pc_out,
-    output reg jump_taken
-);
+module JR (input clk, input [31:0] r0, output [31:0] pc_out);
 
-    always @(*) begin
-        pc_out = r0; // set jump target address to value in r0 register
-        jump_taken = 1'b1; // set jump taken signal
-    end
+  assign pc_out = r0;  
 
 endmodule

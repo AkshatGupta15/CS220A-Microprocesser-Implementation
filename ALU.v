@@ -1,128 +1,85 @@
 `timescale 1ns / 1ps
 
-module ADD (input signed [31:0] A, input signed [31:0] B, output reg [31:0] out);
+module ADD (input signed [31:0] A, input signed [31:0] B, output [31:0] out);  // working
 
+assign out = A + B;
+
+endmodule
+
+module ADDI(input signed [31:0] A, input [15:0] imm,  output [31:0] out);   // working
+
+assign out = A + {{16{imm[15]}}, imm};
+
+endmodule
+
+module ADDIU(input unsigned [31:0] A, input [15:0] imm,  output [31:0] out);  // 
+
+assign out = A + {{16{imm[15]}}, imm};
+
+endmodule
+
+module ADDU(input unsigned [31:0] A, input unsigned [31:0] B, output [31:0] out); // 
+
+assign out = A+B;
+
+endmodule
+
+module SUB(input signed [31:0] A, input signed [31:0] B, output [31:0] diff);  // working
+
+assign diff = A - B;
+
+endmodule
+
+module SUBU(input unsigned [31:0] A, input unsigned [31:0] B, output [31:0] diff);  // 
+	  
+assign diff = A - B;
+
+endmodule
+
+module AND(input [31:0] A, input [31:0] B, output [31:0] out);   // working
 	 
-always@(*) begin
-  out = A + B;
-end  
+assign out = A&B;
 
 endmodule
 
-module ADDI(input signed [31:0] A, input [15:0] imm,  output reg [31:0] out);
+module ANDI(input [31:0] A, input [15:0] imm, output [31:0] out);   // working
 
-always @(*) begin
-  out = A + {{16{imm[15]}}, imm}; // Sign-extend the immediate value
-end
+assign out = A & {{16{imm[15]}}, imm};
 
 endmodule
 
-module ADDIU(input unsigned [31:0] A, input [15:0] imm,  output reg [31:0] out);
-
-always @(*) begin
-  out = A + {{16{imm[15]}}, imm}; // Sign-extend the immediate value
-end
-
-endmodule
-
-module ADDU(input unsigned [31:0] A, input unsigned [31:0] B, output reg [31:0] out);
+module OR(input [31:0] A, input [31:0] B, output [31:0] out);    // working
 	 
-always@(*) begin
-  out = A + B;
-end  
+assign out = A | B; 
 
 endmodule
 
-module SUB(input signed [31:0] A, input signed [31:0] B, output reg [31:0] diff);
-	 
-always@(*) begin
-  diff = A - B;
-end  
+module ORI(input [31:0] A, input [15:0] imm, output [31:0] out);   // working
+
+assign out = A | {{16{imm[15]}}, imm}; 
 
 endmodule
 
-module SUBU(input unsigned [31:0] A, input unsigned [31:0] B, output reg [31:0] diff);
-	 
-always@(*) begin
-  diff = A - B;
-end  
+module SLL(input [31:0] A, input [15:0] sa, output [31:0] out);    // working
+
+assign out = A << sa; 
 
 endmodule
 
-module AND(input [31:0] A, input [31:0] B, output reg [31:0] out);
-	 
-    always@(*) begin
-    out = A & B;
-    end  
+module SRL(input [31:0] A, input [15:0] sa, output [31:0] out);    // working
+
+assign out = A >> sa;
 
 endmodule
 
-module ANDI(input [31:0] A, input [15:0] imm, output reg [31:0] out);
+module SLT(input signed [31:0] A,  input signed [31:0] B, output [31:0] out);  // working
 
-    always @(*) begin
-    out = A & {{16{imm[15]}}, imm}; // Sign-extend the immediate value
-    end
+assign out = (A < B) ? 1 : 0;
 
 endmodule
 
-module OR(input [31:0] A, input [31:0] B, output reg [31:0] out);
-	 
-    always@(*) begin
-    out = A | B;
-    end  
+module SLTI(input signed [31:0] A, input signed [15:0] imm, output [31:0] out); // working
 
-endmodule
+assign out = (A < {{16{imm[15]}}, imm})? 1:0;
 
-module ORI(input [31:0] A, input [15:0] imm, output reg [31:0] out);
-
-    always @(*) begin
-    out = A | {{16{imm[15]}}, imm}; // Sign-extend the immediate value
-    end
-
-endmodule
-
-module SLL(input [31:0] A, input [15:0] sa, output reg [31:0] out);
-
-  always @(*) begin
-    out = A << {{16{sa[15]}}, sa};
-  end
-
-endmodule
-
-module SRL(input [31:0] A, input [15:0] sa, output reg [31:0] out);
-
-  always @(*) begin
-    out = A >> {{16{sa[15]}}, sa};
-  end
-
-endmodule
-
-module SLT(input [31:0] A, input [31:0] B, output reg [31:0] out);
-
-  always @(*) begin
-
-    if(A < B) begin
-      out <= 32'b000000_00000_00000_00000_00000_000001;
-    end
-
-    else begin
-      out <= 32'b000000_00000_00000_00000_00000_000000;
-    end 
-
-  end    
-endmodule
-
-module SLTI(input [31:0] A, input [15:0] imm, output reg [31:0] out);
-
-  always @(*) begin
-
-    if(A < {{16{imm[15]}}, imm}) begin
-      out <= 32'b000000_00000_00000_00000_00000_000001;
-    end
-
-    else begin
-      out <= 32'b000000_00000_00000_00000_00000_000000;
-    end 
-     
-  end    
 endmodule
