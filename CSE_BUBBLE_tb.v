@@ -3,14 +3,10 @@
 module simulator();
 
     reg clk, rst;
-    // reg [31:0] data_input [0:255];
-    wire [31:0] d_out;
-    wire [31:0] d_reg;
-    wire [31:0] d_th;
-    wire [31:0] d_jump;
+    wire [31:0] s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test;
     wire[31:0] instruction;
 
-    cse_bubble module_call(.clk(clk), .rst(rst), .d_out(d_out), .instruction(instruction), .d_reg(d_reg), .d_th(d_th));
+    cse_bubble module_call(.clk(clk), .rst(rst), .instruction(instruction), .s0(s0), .s1(s1), .s2(s2), .s3(s3), .t0(t0), .t1(t1), .t2(t2), .t3(t3), .t4(t4), .t5(t5), .pc_test(pc_test));
 
     initial begin  
         #10
@@ -25,27 +21,9 @@ module simulator();
     end
 
     initial begin
-        $monitor("clk = %d,      instruction = %b,       first_output = %d,      PC = %d", clk, instruction, d_out, d_reg);
-        // $monitor("instruction = %b", instruction);
-        // #30
-
-        // $display("Machine code of first instruction =  %b",instruction);
-        // $display("First Output is %d\n", d_out);
-
-
-        // #15
-
-        // $display("Machine code of second instruction = %b",instruction);
-        // $display("Second Output is %b\n", d_reg);
-
-
-        // #15
-
-        // $display("Machine code of third instruction = %b",instruction);    
-        // $display("Third Output is %d\n", d_th);
-        
-
-        #150
+        // $monitor("clk = %d,t0 = %d,t1 = %d,t2 = %d,t3 = %d,t4 = %d,t5 = %d,s0 = %d,s1 = %d,s2 = %d,PC = %d", clk,t0,t1,t2,t3,t4,t5,s0,s1,s2,pc_test); 
+        $display("\nSorted Array is: ");
+        #5000
         $finish;
     end
 

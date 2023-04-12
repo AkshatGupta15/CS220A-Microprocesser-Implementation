@@ -1,13 +1,13 @@
-`include "fetch_info.v"
+`include "fetch_data.v"
 module simulator();
     
     // Instantiation of the UUT (Unit Under Test)
-    reg [31:0] a,b,c;
+    reg [31:0] data_addr,write_data;
     wire [31:0] out;
-    reg clk,reset,mode,write;
+    reg clk,rst,mode,write_en;
 
     // Change as per the program to be tested
-    veda2 uut(clk,a,out,reset,mode,b,c,write);
+    VEDA_data uut(clk,rst,data_addr,mode,write_en,write_data,out);
 
     initial begin  
         #10
@@ -16,41 +16,32 @@ module simulator();
     end
 
     initial begin  
-        reset <= 1'b0;
+        rst <= 1'b0;
         #1
-        reset <= 1'b1;
+        rst <= 1'b1;
         #1
-        reset <= 1'b0;
+        rst <= 1'b0;
     end
     
     initial begin;
-        $dumpfile("test1.vcd");
-        $dumpvars;
         #10
 
-        a <= 134; b <= 13; c <= 10; mode <= 0; write <= 1;
+        data_addr <= 0; mode <= 1; write_en <= 1; write_data <= 4;
         #10
-        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,a,out);
+        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,write_data,out);
         
-        a <= 144; b <= 10; c <= 3; mode <= 1; write <= 1;
+        data_addr <= 5; mode <= 1; write_en <= 1; write_data <= 3;
         #10
-        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,a,out);
+        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,write_data,out);
         
-        a <= 170; b <= 11; c <= 10; mode <= 0; write <= 1;
+        data_addr <= 1; mode <= 0; write_en <= 1; write_data <= 34;
         #10
-        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,a,out);
+        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,write_data,out);
         
-        a <= 200; b <= 10; c <= 3; mode <= 0; write <= 1;
+        data_addr <= 1; mode <= 1; write_en <= 1; write_data <= 50;
         #10
-        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,a,out);
-        
-        a <= 210; b <= 13; c <= 10; mode <= 0; write <= 1;
-        #10
-        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,a,out);
-        
-        a <= 201; b <= 13; c <= 10; mode <= 0; write <= 1;
-        #10
-        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,a,out);
+        $display("clock is %d, mode is %d, input value is %d, output value is %d",clk,mode,write_data,out);
+    
         
         #2000 $finish;
     end

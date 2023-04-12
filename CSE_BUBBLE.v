@@ -1,26 +1,18 @@
 `include "fetch_instructions.v"
-`include "fetch_memory.v"
+`include "fetch_data.v"
 `include "instr_decode.v"
 `include "ALU.v"
 `include "branching.v"
-// `include "VEDA.v"
+`include "system.v"
 
-// module top_module(clk,rst,instr_input,data_input);
-
-// endmodule
-
-
-module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
+module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
 
     input clk,rst;
-    output [31:0] d_out;
-    output [31:0] d_reg;
-    output [31:0] d_th;
-    // output [31:0] d_jump;
+    output [31:0] s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test;                
     output [31:0] instruction;
-    reg [31:0] processor [0:31];
+   
+    reg [31:0] processor [0:31];       // processor memory which stores all the 32 registers
 
-    // processor memory which stores all the 32 registers
     // Registers 0-5 : System controlled registers PC, EPC, Cause, BadVAddr, Status, IR
     // Registers 6-31 : User controlled registers r0, at, v0-v1, a0-a3, gp, sp, ra, t0-t6, s0-s7
     // Register 0 - PC - Program Counter (Denotes the next instruction to be fetched)
@@ -36,10 +28,8 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
     // Register 14 - gp - Global Pointer - Will be pointing to the start of the global area, can be used to point the starting address of heap in data memory
     // Register 15 - sp - Stack Pointer - Will denote the starting location of stack memory in data memory
     // Register 16 - ra - Return Address - Will Store the address of the instruction where we have to return after function exits
-    // Register (17-23) - (t0-t6) - Temprorary Registers - Will be used to store values just required temprorarily
-    // Register (24-31) - (s0-s7) - Stored Registers - Will be used to store values required over multiple functions or modules
-
-     reg [31:0] data [0:255];   // this will be the VEDA memory that stores the data
+    // Register (17-24) - (t0-t7) - Temprorary Registers - Will be used to store values just required temprorarily
+    // Register (25-31) - (s0-s6) - Stored Registers - Will be used to store values required over multiple functions or modules
 
     // INITIALIZATION OF SYSTEM CONTROLLED REGISTERS INSIDE THE PROCESSOR
 
@@ -53,7 +43,7 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
         processor[5] <= 0;          // Clear the IR Register
         processor[6] <= 0;          // Register r0 always hardwired to 0
         processor[7] <= 0;          // Register at set to 0
-        processor[16] <= 0;           // Register ra set to 0
+        processor[16] <= 0;         // Register ra set to 0
 
         for(i=8;i<=13;i=i+1) begin 
             processor[i] <= 0;      // Clear all return and argument registers in processor
@@ -66,20 +56,26 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
             processor[i] <= 0;      // Clear all temp and save registers in processor
         end 
 
-        processor[18] <= 32'b000000_00000_00000_00000_00000_000011;     // only for testing, hardcoded to 3
-        //processor[19] <= 32'b000000_00000_00000_00000_00000_000011; 
-        processor[19] <= 32'b000000_00000_00000_00000_00000_000011;     // only for testing, hardcoded to 3
-                            //  111111_11111_11111_11111_11111_111101;
+        // processor[18] <= 32'b000000_00000_00000_00000_00000_000011;     // only for testing, hardcoded to 3
+        // processor[19] <= 32'b000000_00000_00000_00000_00000_000001; 
+        // processor[19] <= 32'b000000_00000_00000_00000_00000_000011;     // only for testing, hardcoded to 3
+
+        // processor[8] <= 1;
+        // processor[10] <= 5;               
 
     end
 
-    // DATA MEMORY INITIALIZATION
+    // DATA READ/WRITE PHASE
 
-    always @(posedge rst) begin 
-        for(i = 0; i < 32; i=i+1) begin
-            data[i] <= 0;
-        end    
-        // data[10] <= 2;
+    wire [31:0] data_output;
+    reg [31:0] data_addr;
+    reg [31:0] data_in;
+    reg mode;
+    VEDA_data Fetch(clk,rst,data_addr,mode,1'b1,data_in,data_output);
+    always @(data_output) begin
+        if(opcode == 12) begin
+            processor[rt] <= data_output;
+        end
     end
 
 
@@ -88,9 +84,6 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
     // processor[0] is the PC register whcih stores the next instruction to be executed
     wire [31:0] instr_output;
     VEDA_instruction fetch(clk,rst, processor[0], 1'b1, 1'b0, 32'b0, instr_output);
-    
-    assign instruction = instr_output;
-
     
 
     // INSTRUCTION DECODE PHASE (READ THE IR REGISTER AND SEND THE CONTROL TO THAT PARTICULAR INSTRUCTION DATA PATH)
@@ -102,9 +95,11 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
 
     instruction_decode DCODE(clk, instr_output,opcode, rs, rd, rt, shamt, funct, address_i, address_j, imm);
 
+    // SYSTEM INSTRUCTION EXECUTE 
+    reg [31:0] temp_input[0:31];
+    sys_execute EXEC(opcode, temp_input[0], temp_input[1]);
 
-
-    // FINITE STATE MACHINE FOR THE CONTROL SIGNALS TO EXECUTE THE PROCESSOR
+    // INSTRUCTION EXECUTE PHASE (FINITE STATE MACHINE FOR THE CONTROL SIGNALS TO EXECUTE THE PROCESSOR)
     
     // Defining the states
     parameter execute_ADD = 6'b000000, execute_SUB = 6'b000001, execute_SUBU = 6'b000010, execute_ADDU = 6'b000011,
@@ -112,7 +107,8 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
               execute_ANDI = 6'b001000, execute_ORI = 6'b001001, execute_SLL = 6'b001010,  execute_SRL = 6'b001011,
               execute_LW = 6'b001100,    execute_SW = 6'b001101, execute_BEQ = 6'b001110,  execute_BNE = 6'b001111,
               execute_BGT = 6'b010000, execute_BGTE = 6'b010001, execute_BLE = 6'b010010, execute_BLEQ = 6'b010011,
-              execute_J = 6'b010100, execute_JR = 6'b010101, execute_JAL = 6'b010110, execute_SLT = 6'b010111, execute_SLTI = 6'b011000;
+              execute_J = 6'b010100,   execute_JR = 6'b010101,   execute_JAL = 6'b010110,  execute_SLT = 6'b010111, 
+              execute_SLTI = 6'b011000, execute_SYS = 6'b011001, execute_NOP = 6'b011010;
 
     wire [31:0] temp_output[0:31];
 
@@ -140,21 +136,13 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
     JAL jal_inst(.clk(clk), .target_address(address_j), .pc_in(processor[0]), .pc_out(temp_output[22]), .jal_ra(temp_output[24]));
     JR jr_inst(.clk(clk), .r0(processor[rs]), .pc_out(temp_output[25]));
 
-    // VEDA_memory fetch1(.clk(clk), .rst(rst), .)
-
-
     
-    always @(posedge clk) begin 
+    always @(negedge clk) begin 
         case(opcode)
 
         // Following are states for ALU instructions
 
             execute_ADD: begin
-                // $display("Inside add case");
-                // $display("Value of rs %b ",rs);
-                // $display("Value of rt %b",rt);
-                // $display("processor[rs] %b", processor[rs]);
-                // $display("processor[rt] %b", processor[rt]);
                 processor[rd] <= temp_output[0];
                 processor[0] <= processor[0] + 1;  //incrementing the program counter
             end
@@ -214,13 +202,20 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
         // // Following are states for data transfer instructions
 
             execute_LW: begin
-                $display("%b",data[ processor[rs] + {{16{address_i[15]}}, address_i} ]);
-                processor[rt] <= data[ processor[rs] + {{16{address_i[15]}}, address_i} ];
+                mode <= 1'b1;
+                data_addr <= processor[rs] + {{16{address_i[15]}}, address_i};
                 processor[0] <= processor[0] + 1;  
+                // $display("Loaded %d to reg", data_output);
+                // $display("%d",processor[rt]);
             end
             execute_SW: begin
-                data[ processor[rs] + {{16{address_i[15]}}, address_i} ] <= processor[rt];
+                mode <= 1'b0;
+                data_addr <= processor[rs] + {{16{address_i[15]}}, address_i};
+                data_in <= processor[rt];
                 processor[0] <= processor[0] + 1;  
+
+                // $display("Stores %d in mem", data_in);
+
             end
 
         // // Following are states for branching instructions
@@ -254,6 +249,18 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
                 processor[0] <= temp_output[26];
             end
 
+            // Following are states for system instructions
+
+            execute_SYS: begin
+                temp_input[0] <= processor[8];        // storing $v0
+                temp_input[1] <= processor[10];       // storing $a0
+                processor[0] <= processor[0] + 1;  
+            end
+
+            execute_NOP: begin
+                processor[0] <= processor[0] + 1;
+            end
+
             // Default case
 
             default: begin
@@ -263,10 +270,21 @@ module cse_bubble(clk,rst,d_out,instruction,d_reg,d_th);
         endcase
     end   
 
-    assign d_out = processor[rd];
-    assign d_reg = processor[0];
-    // assign d_reg = temp_output[14];
-    // assign d_th = temp_output[9];
-    // assign d_jump = temp_output[12];
+    // FOR SIMULATION PURPOSE
 
+    assign instruction = instr_output;
+
+    assign s0 = processor[25];
+    assign s1 = processor[26];
+    assign s2 = processor[27];
+    assign s3 = processor[28];
+
+    assign t0 = processor[17];
+    assign t1 = processor[18];
+    assign t2 = processor[19];
+    assign t3 = processor[20];
+    assign t4 = processor[21];
+    assign t5 = processor[22];
+
+    assign pc_test = processor[0];
 endmodule

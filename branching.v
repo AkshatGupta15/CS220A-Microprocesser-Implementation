@@ -44,7 +44,7 @@ endmodule
 
 module J (input clk, input [25:0] target_address, input [31:0] pc_in, output [31:0] pc_out);
     
-  assign pc_out = {pc_in[31:28], target_address, 2'b00}; 
+  assign pc_out = {{6{target_address[25]}}, target_address}; 
 
 endmodule
 
