@@ -18,12 +18,12 @@ module VEDA_data(clk, rst, addr, mode, write_en ,write_data, out_wire);
             veda[i] <= 0;
         end   
 
-        veda[0] <= 67;
-        veda[1] <= 24;
-        veda[2] <= 22;
-        veda[3] <= 12;
-        veda[4] <= 2;
-        veda[5] <= 0;
+        // veda[0] <= 67;
+        // veda[1] <= 24;
+        // veda[2] <= 22;
+        // veda[3] <= 12;
+        // veda[4] <= 2;
+        // veda[5] <= 0;
 
         // veda[0] <= 5;
         // veda[1] <= 4;

@@ -8,7 +8,7 @@
 module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
 
     input clk,rst;
-    output [31:0] s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test;                
+    output [31:0] s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test;      // simulation variable          
     output [31:0] instruction;
    
     reg [31:0] processor [0:31];       // processor memory which stores all the 32 registers
@@ -54,14 +54,7 @@ module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
         
         for(i=17;i<=31;i=i+1) begin 
             processor[i] <= 0;      // Clear all temp and save registers in processor
-        end 
-
-        // processor[18] <= 32'b000000_00000_00000_00000_00000_000011;     // only for testing, hardcoded to 3
-        // processor[19] <= 32'b000000_00000_00000_00000_00000_000001; 
-        // processor[19] <= 32'b000000_00000_00000_00000_00000_000011;     // only for testing, hardcoded to 3
-
-        // processor[8] <= 1;
-        // processor[10] <= 5;               
+        end                
 
     end
 
