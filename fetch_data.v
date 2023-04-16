@@ -14,13 +14,15 @@ module VEDA_data(clk, rst, addr, mode, write_en ,write_data, out_wire);
     integer i;
     
     always @(posedge rst) begin
-        for(i = 0; i < 32; i=i+1) begin
+        for(i = 0; i < 256; i=i+1) begin
             veda[i] <= 0;
         end   
+ 
+        // Uncomment any one section of the array below
 
         // veda[0] <= 67;
         // veda[1] <= 24;
-        // veda[2] <= 22;
+        // veda[2] <= 15;
         // veda[3] <= 12;
         // veda[4] <= 2;
         // veda[5] <= 0;
@@ -46,19 +48,22 @@ module VEDA_data(clk, rst, addr, mode, write_en ,write_data, out_wire);
         // veda[4] <= 23;
         // veda[5] <= 33;
 
-        veda[6] <= 32'b000000_00000_00000_00000_00000_000110; // 6
+        veda[0] <= 210;
+        veda[1] <= 6;
+        veda[2] <= 7;
+        veda[3] <= 19;
+        veda[4] <= 22;
+        veda[5] <= 144;
+
+
+
+        veda[6] <= 32'b000000_00000_00000_00000_00000_000110; // array sizes
     end
-    
-    // always @(*) begin
-    //     if(mode==1) begin
-    //         out <= veda[addr];
-    //     end
-    // end        
+     
 
     always @(posedge clk) begin
         if(mode==0 && write_en==1) begin
             veda[addr] <= write_data;
-            // out = veda[addr];
         end
     end
 

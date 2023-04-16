@@ -48,12 +48,6 @@ module J (input clk, input [25:0] target_address, input [31:0] pc_in, output [31
 
 endmodule
 
-// The 'j' instruction is an unconditional jump that transfers
-// control to the instruction at the target address. The jump address 
-// is calculated by concatenating the upper 4 bits of the current program counter 
-// with the 26-bit jump address left-shifted by 2 bits. 
-
-
 module JAL(input clk, input [25:0] target_address, input [31:0] pc_in, output [31:0] pc_out, output [31:0] jal_ra);
 
   assign pc_out = {pc_in[31:28], target_address, 2'b00};

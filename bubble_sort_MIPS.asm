@@ -1,6 +1,6 @@
 .data
 
-array: .word 56, 25, 45, 244, 5, 7                              # input array
+array: .word 5, 4, 3, 2, 1, 0                                   # input array
 size:  .word 6                                                  # size of array
 
 .text

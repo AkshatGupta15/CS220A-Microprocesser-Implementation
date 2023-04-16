@@ -1,3 +1,9 @@
+// This module takes in the INSTRUCTION from the INSTRUCTION FETCH phase, and decodes the instruction as  
+// per its instruction format. It subsequently assigns the values to various registers from these decoded 
+// values, like rs, rt, address_i etc. This is a completely combinational module.
+
+
+
 module instruction_decode(clk, instr, opcode, rs, rd, rt, shamt, funct, address_i, address_j, imm);
 
     input clk;

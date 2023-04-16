@@ -5,11 +5,9 @@
 `include "branching.v"
 `include "system.v"
 
-module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
+module cse_bubble(clk,rst);
 
     input clk,rst;
-    output [31:0] s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test;      // simulation variable          
-    output [31:0] instruction;
    
     reg [31:0] processor [0:31];       // processor memory which stores all the 32 registers
 
@@ -152,8 +150,8 @@ module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
                 processor[0] <= processor[0] + 1; 
             end
             execute_ADDI: begin
-                processor[rt] <= temp_output[4];
-                processor[0] <= processor[0] + 1;  
+                processor[rt]<= temp_output[4];
+                processor[0] <= processor[0] + 1;   
             end
             execute_ADDIU: begin
                 processor[rt] <= temp_output[5];
@@ -192,26 +190,21 @@ module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
                 processor[0] <= processor[0] + 1;   
             end
 
-        // // Following are states for data transfer instructions
+        // Following are states for data transfer instructions
 
             execute_LW: begin
-                mode <= 1'b1;
+                mode = 1'b1;
                 data_addr <= processor[rs] + {{16{address_i[15]}}, address_i};
-                processor[0] <= processor[0] + 1;  
-                // $display("Loaded %d to reg", data_output);
-                // $display("%d",processor[rt]);
+                processor[0] <= processor[0] + 1;
             end
             execute_SW: begin
                 mode <= 1'b0;
                 data_addr <= processor[rs] + {{16{address_i[15]}}, address_i};
                 data_in <= processor[rt];
-                processor[0] <= processor[0] + 1;  
-
-                // $display("Stores %d in mem", data_in);
-
+                processor[0] <= processor[0] + 1;
             end
 
-        // // Following are states for branching instructions
+        // Following are states for branching instructions
 
             execute_BEQ: begin
                 processor[0] <= temp_output[14];
@@ -263,21 +256,4 @@ module cse_bubble(clk,rst,instruction,s0,s1,s2,s3,t0,t1,t2,t3,t4,t5,pc_test);
         endcase
     end   
 
-    // FOR SIMULATION PURPOSE
-
-    assign instruction = instr_output;
-
-    assign s0 = processor[25];
-    assign s1 = processor[26];
-    assign s2 = processor[27];
-    assign s3 = processor[28];
-
-    assign t0 = processor[17];
-    assign t1 = processor[18];
-    assign t2 = processor[19];
-    assign t3 = processor[20];
-    assign t4 = processor[21];
-    assign t5 = processor[22];
-
-    assign pc_test = processor[0];
 endmodule
