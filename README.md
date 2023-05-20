@@ -1,5 +1,5 @@
-# CS220A-Microprocesser-Implementation
-Implementation of microprocesser "CSE-BUBBLE" in Verilog.
+# CSE-BUBBLE
+This repository contains the course project of CS220A. We have made an Instruction Set Architecture with 25 Instructions using the verilog hardware description language, and implemented 'Bubble Sort' using the same.
 
 Run the command - iverilog -o test CSE_BUBBLE_tb.v
                   vvp test
