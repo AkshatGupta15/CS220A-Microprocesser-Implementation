@@ -5,7 +5,8 @@ Specific details of the implementation can be found in the documentation.
 
 Run the command - 
 ```bash
-iverilog -o test CSE_BUBBLE_tb.v vvp test
+iverilog -o test CSE_BUBBLE_tb.v
+vvp test
 ```
 
 
